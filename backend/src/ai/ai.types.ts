@@ -2,7 +2,7 @@ export interface ProductBriefInput {
   productName: string;
   productCategory: string;
   targetAudience: string;
-  mainBenefits: string;
+  mainBenefits?: string | null;
   toneOfVoice: string;
   language: string;
   platform: string;
@@ -23,14 +23,14 @@ export interface AIContentResult {
 
 export interface ImagePromptInput {
   productName: string;
-  productType: string;
-  visualStyle: string;
-  background: string;
-  lighting: string;
-  mood: string;
-  brandStyle: string;
-  aspectRatio: string;
-  tool: string;
+  productType?: string;
+  visualStyle?: string;
+  background?: string;
+  lighting?: string;
+  mood?: string;
+  brandStyle?: string;
+  aspectRatio?: string;
+  tool?: string;
 }
 
 export interface TrendInput {

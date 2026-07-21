@@ -12,7 +12,7 @@ model ProductBrief {
   productName      String
   productCategory  String
   targetAudience   String
-  mainBenefits     String
+  mainBenefits     String?
   toneOfVoice      String
   language         String
   platform         String

@@ -56,7 +56,14 @@ export class MockAIService implements AIService {
 
   private buildContent(brief: ProductBriefInput): AIContentResult {
     const isHebrew = (brief.language || '').toLowerCase() === 'hebrew';
-    return isHebrew ? buildHebrewContent(brief) : buildEnglishContent(brief);
+    const defaultBenefits = isHebrew
+      ? 'תוצאות נראות לעין ואיכות בלתי מתפשרת'
+      : 'visible, dermatologist-loved results';
+    const normalized: NormalizedBrief = {
+      ...brief,
+      mainBenefits: brief.mainBenefits?.trim() || defaultBenefits,
+    };
+    return isHebrew ? buildHebrewContent(normalized) : buildEnglishContent(normalized);
   }
 }
 
@@ -201,7 +208,9 @@ function buildImagePromptFromBrief(brief: ProductBriefInput): string {
 // English content
 // ---------------------------------------------------------------------------
 
-function buildEnglishContent(brief: ProductBriefInput): AIContentResult {
+type NormalizedBrief = ProductBriefInput & { mainBenefits: string };
+
+function buildEnglishContent(brief: NormalizedBrief): AIContentResult {
   const tone = toneProfile(brief.toneOfVoice);
   const adjective = pick(tone.adjectives);
   const secondAdjective = pick(tone.adjectives.filter((a) => a !== adjective)) || adjective;
@@ -325,7 +334,7 @@ function hebrewToneProfile(tone: string): HebrewToneProfile {
   return HEBREW_TONE_PROFILES[tone] || HEBREW_TONE_PROFILES.Professional;
 }
 
-function buildHebrewContent(brief: ProductBriefInput): AIContentResult {
+function buildHebrewContent(brief: NormalizedBrief): AIContentResult {
   const tone = hebrewToneProfile(brief.toneOfVoice);
   const name = brief.productName;
   const category = brief.productCategory;

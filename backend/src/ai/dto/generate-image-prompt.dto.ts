@@ -1,39 +1,39 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class GenerateImagePromptDto {
   @IsString()
   @IsNotEmpty()
   productName: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  productType: string;
+  productType?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  visualStyle: string;
+  visualStyle?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  background: string;
+  background?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  lighting: string;
+  lighting?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  mood: string;
+  mood?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  brandStyle: string;
+  brandStyle?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  aspectRatio: string;
+  aspectRatio?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  tool: string;
+  tool?: string;
 }

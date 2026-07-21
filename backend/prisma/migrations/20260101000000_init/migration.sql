@@ -4,7 +4,7 @@ CREATE TABLE "product_briefs" (
     "productName" TEXT NOT NULL,
     "productCategory" TEXT NOT NULL,
     "targetAudience" TEXT NOT NULL,
-    "mainBenefits" TEXT NOT NULL,
+    "mainBenefits" TEXT,
     "toneOfVoice" TEXT NOT NULL,
     "language" TEXT NOT NULL,
     "platform" TEXT NOT NULL,

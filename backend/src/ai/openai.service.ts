@@ -103,7 +103,7 @@ export class OpenAIService implements AIService {
       `Product name: ${brief.productName}\n` +
       `Category: ${brief.productCategory}\n` +
       `Target audience: ${brief.targetAudience}\n` +
-      `Main benefits: ${brief.mainBenefits}\n` +
+      `Main benefits: ${brief.mainBenefits || 'not specified — infer sensible benefits from the category'}\n` +
       `Tone of voice: ${brief.toneOfVoice}\n` +
       `Language: ${brief.language}\n` +
       `Primary platform: ${brief.platform}\n` +

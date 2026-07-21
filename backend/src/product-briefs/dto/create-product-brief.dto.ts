@@ -14,9 +14,9 @@ export class CreateProductBriefDto {
   @IsNotEmpty()
   targetAudience: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  mainBenefits: string;
+  mainBenefits?: string;
 
   @IsString()
   @IsNotEmpty()
