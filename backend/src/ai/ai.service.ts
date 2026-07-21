@@ -13,19 +13,18 @@ export class AiService {
   ) {}
 
   async generateContent(dto: GenerateContentDto) {
-    let productBriefId = dto.productBriefId;
+    let brief;
 
-    if (!productBriefId) {
+    if (dto.productBriefId) {
+      brief = await this.prisma.productBrief.findUnique({ where: { id: dto.productBriefId } });
+      if (!brief) {
+        throw new NotFoundException(`ProductBrief with id ${dto.productBriefId} not found`);
+      }
+    } else {
       if (!dto.brief) {
         throw new BadRequestException('Either productBriefId or brief must be provided');
       }
-      const brief = await this.prisma.productBrief.create({ data: dto.brief });
-      productBriefId = brief.id;
-    }
-
-    const brief = await this.prisma.productBrief.findUnique({ where: { id: productBriefId } });
-    if (!brief) {
-      throw new NotFoundException(`ProductBrief with id ${productBriefId} not found`);
+      brief = await this.prisma.productBrief.create({ data: dto.brief });
     }
 
     const briefInput: ProductBriefInput = brief;
