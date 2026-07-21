@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
-# ---- deps ---------------------------------------------------------------
+# ---- deps (full, incl. devDependencies — used for the TS build) -----------
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma
 RUN npm ci
 
-# ---- build ----------------------------------------------------------------
+# ---- build ------------------------------------------------------------------
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -15,31 +15,31 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
+# ---- prod-deps (production-only node_modules for the runtime image) -------
+FROM node:20-alpine AS prod-deps
+WORKDIR /app
+COPY package*.json ./
+COPY prisma ./prisma
+RUN npm ci --omit=dev
+RUN npx prisma generate
+
 # ---- runtime ----------------------------------------------------------------
 FROM node:20-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 EXPOSE 4000
 
-# NOTE on migrations: this image does NOT run migrations automatically.
-# The chosen approach for this project is to run `npx prisma migrate deploy`
-# as a one-off step from docker-compose (or CI/CD) BEFORE starting this
-# container, e.g. in docker-compose.yml:
-#
-#   backend-migrate:
-#     build: ./backend
-#     command: npx prisma migrate deploy
-#     depends_on: [postgres]
-#   backend:
-#     build: ./backend
-#     command: node dist/main.js
-#     depends_on: [backend-migrate]
-#
-# This keeps the container image simple (no entrypoint shell script) and
-# avoids re-running migrations on every container restart/scale-out.
-CMD ["node", "dist/main.js"]
+# Migrations: the entrypoint runs `prisma migrate deploy` against DATABASE_URL
+# before starting the server (see docker-entrypoint.sh). This keeps the
+# top-level docker-compose.yml simple — the backend service just builds this
+# image and runs it, no separate one-off migrate service/command is required.
+# `prisma` is kept as a regular (non-dev) dependency specifically so its CLI
+# survives `npm ci --omit=dev` and is available in this runtime image.
+ENTRYPOINT ["./docker-entrypoint.sh"]
