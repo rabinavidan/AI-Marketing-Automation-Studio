@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ProductBrief {
+  id               String   @id @default(cuid())
+  productName      String
+  productCategory  String
+  targetAudience   String
+  mainBenefits     String
+  toneOfVoice      String
+  language         String
+  platform         String
+  campaignGoal     String?
+  additionalNotes  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  generatedContent GeneratedContent[]
+
+  @@map("product_briefs")
+}
+
+model GeneratedContent {
+  id                 String   @id @default(cuid())
+  productBriefId     String
+  productBrief       ProductBrief @relation(fields: [productBriefId], references: [id], onDelete: Cascade)
+
+  productDescription String
+  instagramPost      String
+  tiktokScript       String
+  emailCampaign      String
+  adCopy             String
+  seoTitle           String
+  hashtags           String[]
+  imagePrompt        String
+
+  status             String   @default("Draft")
+  owner              String   @default("Unassigned")
+  contentType        String   @default("Full Campaign")
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("generated_content")
+}
+
+model PromptTemplate {
+  id         String   @id @default(cuid())
+  title      String
+  category   String
+  description String
+  promptText String
+  tags       String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("prompt_templates")
+}
+
+model WorkflowTask {
+  id          String    @id @default(cuid())
+  title       String
+  productName String
+  contentType String
+  assignedTo  String
+  status      String    @default("To Do")
+  priority    String    @default("Medium")
+  dueDate     DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("workflow_tasks")
+}
+
+model Trend {
+  id                  String   @id @default(cuid())
+  name                String
+  category            String
+  description         String
+  suggestedCampaign   String
+  suggestedPlatforms  String[]
+  contentIdeas        String[]
+  createdAt           DateTime @default(now())
+
+  @@map("trends")
+}
