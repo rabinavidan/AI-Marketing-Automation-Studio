@@ -117,7 +117,7 @@ jobs:
         working-directory: frontend
         run: nohup npm run start > frontend.log 2>&1 &
       - name: Wait for frontend
-        run: npx wait-on http://localhost:3000 --timeout 60000
+        run: npx wait-on http://localhost:3000/dashboard --timeout 60000
 
       - name: Install e2e dependencies
         working-directory: e2e
