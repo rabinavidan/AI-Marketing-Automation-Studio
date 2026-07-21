@@ -6,8 +6,8 @@ export interface ProductBriefInput {
   toneOfVoice: string;
   language: string;
   platform: string;
-  campaignGoal?: string;
-  additionalNotes?: string;
+  campaignGoal?: string | null;
+  additionalNotes?: string | null;
 }
 
 export interface AIContentResult {

@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ProductBriefsService } from './product-briefs.service';
 import { CreateProductBriefDto } from './dto/create-product-brief.dto';
 import { UpdateProductBriefDto } from './dto/update-product-brief.dto';
